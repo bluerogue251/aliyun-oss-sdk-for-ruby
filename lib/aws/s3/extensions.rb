@@ -1,4 +1,4 @@
-#encoding: BINARY
+# -*- encoding : utf-8 -*-
 #:stopdoc:
 
 class Hash
@@ -342,3 +342,4 @@ class XmlGenerator < String #:nodoc:
   end
 end
 #:startdoc:
+
