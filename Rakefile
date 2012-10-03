@@ -7,7 +7,7 @@ require 'rake/testtask'
 require 'rdoc/task'
 require 'rubygems/package_task'
 
-require File.dirname(__FILE__) + '/lib/aws/s3'
+require File.dirname(__FILE__) + '/lib/aliyun/oss'
 
 def library_root
   File.dirname(__FILE__)
@@ -54,7 +54,7 @@ namespace :doc do
   end
 
   task :deploy => :rerdoc do
-    sh %(scp -r doc marcel@rubyforge.org:/var/www/gforge-projects/amazon/)
+    sh %(scp -r doc marcel@rubyforge.org:/var/www/gforge-projects/aliyun/)
   end
 end
 
@@ -143,7 +143,7 @@ namespace :dist do
   desc 'Upload a beta gem'
   task :push_beta_gem => [:clobber_package, :package] do
     beta_gem = package_name[spec]
-    sh %(scp #{beta_gem}.gem  marcel@rubyforge.org:/var/www/gforge-projects/amazon/beta)
+    sh %(scp #{beta_gem}.gem  marcel@rubyforge.org:/var/www/gforge-projects/aliyun/beta)
   end
 
   task :spec do
@@ -308,7 +308,7 @@ namespace :site do
   task :deploy => :build do
     site_files = FileList['site/public/*']
     site_files.delete_if {|file| File.directory?(file)}
-    sh %(scp #{site_files.join ' '} marcel@rubyforge.org:/var/www/gforge-projects/amazon/)
+    sh %(scp #{site_files.join ' '} marcel@rubyforge.org:/var/www/gforge-projects/aliyun/)
   end
 end
 
