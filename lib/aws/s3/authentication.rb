@@ -125,7 +125,7 @@ module AWS
           end
           
           def build
-            "AWSAccessKeyId=#{access_key_id}&Expires=#{expires}&Signature=#{encoded_canonical}"
+            "OSSAccessKeyId=#{access_key_id}&Expires=#{expires}&Signature=#{encoded_canonical}"
           end
       end
       
