@@ -195,7 +195,7 @@ module AWS
               self << (key =~ self.class.amazon_header_prefix ? "#{key}:#{value}" : value)
               self << "\n"
             end
-            self << path
+            self << URI.unescape(path)
           end
       
           def initialize_headers
