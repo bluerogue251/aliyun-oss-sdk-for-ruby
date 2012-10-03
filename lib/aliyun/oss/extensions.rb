@@ -74,7 +74,7 @@ class String
     end
   end
   
-  # All paths in in S3 have to be valid unicode so this takes care of 
+  # All paths in in OSS have to be valid unicode so this takes care of 
   # cleaning up any strings that aren't valid utf-8 according to String#valid_utf8?
   if RUBY_VERSION >= '1.9'
     def remove_extended!
@@ -117,7 +117,7 @@ class CoercibleString < String
   end
   
   private
-    # Lame hack since Date._parse is so accepting. S3 dates are of the form: '2006-10-29T23:14:47.000Z'
+    # Lame hack since Date._parse is so accepting. OSS dates are of the form: '2006-10-29T23:14:47.000Z'
     # so unless the string looks like that, don't even try, otherwise it might convert an object's
     # key from something like '03 1-2-3-Apple-Tree.mp3' to Sat Feb 03 00:00:00 CST 2001.
     def datetime_format
