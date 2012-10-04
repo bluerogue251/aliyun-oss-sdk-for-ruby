@@ -38,7 +38,7 @@ namespace :doc do
   end
 
   task :readme do
-    require 'support/rdoc/code_info'
+    require File.dirname(__FILE__) + '/support/rdoc/code_info'
     RDoc::CodeInfo.parse('lib/**/*.rb')
 
     strip_comments = lambda {|comment| comment.gsub(/^# ?/, '')}
@@ -62,7 +62,8 @@ namespace :dist do
   spec = eval(File.read(File.expand_path('aws-s3.gemspec',File.dirname(__FILE__))))
 
   # Regenerate README before packaging
-  task :package => 'doc:readme'
+  #task :package => 'doc:readme' #TODO 暂时不生成文档
+  task :package
   Gem::PackageTask.new(spec) do |pkg|
     pkg.need_tar_gz = true
     pkg.package_files.include('{lib,script,test,support}/**/*')
@@ -143,7 +144,8 @@ namespace :dist do
   desc 'Upload a beta gem'
   task :push_beta_gem => [:clobber_package, :package] do
     beta_gem = package_name[spec]
-    sh %(scp #{beta_gem}.gem  marcel@rubyforge.org:/var/www/gforge-projects/aliyun/beta)
+    #sh %(scp #{beta_gem}.gem  marcel@rubyforge.org:/var/www/gforge-projects/aliyun/beta)
+    sh %(gem push #{beta_gem}.gem)
   end
 
   task :spec do
