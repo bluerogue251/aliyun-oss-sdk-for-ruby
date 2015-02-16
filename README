@@ -19,7 +19,7 @@ The Aliyun::OSS library ships with an interactive shell called <tt>oss</tt>. Fro
 Before you can do anything, you must establish a connection using Base.establish_connection!.  A basic connection would look something like this:
 
   Aliyun::OSS::Base.establish_connection!(
-    :access_key_id     => 'abc', 
+    :access_key_id     => 'abc',
     :secret_access_key => '123'
   )
 
@@ -46,21 +46,21 @@ See more connection details at Aliyun::OSS::Connection::Management::ClassMethods
 == Aliyun::OSS Basics
 === The service, buckets and objects
 
-The three main concepts of OSS are the service, buckets and objects. 
+The three main concepts of OSS are the service, buckets and objects.
 
 ==== The service
 
-The service lets you find out general information about your account, like what buckets you have. 
+The service lets you find out general information about your account, like what buckets you have.
 
   Service.buckets
   # => []
 
- 
+
 ==== Buckets
 
 Buckets are containers for objects (the files you store on OSS). To create a new bucket you just specify its name.
 
-  # Pick a unique name, or else you'll get an error 
+  # Pick a unique name, or else you'll get an error
   # if the name is already taken.
   Bucket.create('jukebox')
 
@@ -146,7 +146,7 @@ If you just want to fetch an object you've stored on OSS, you just specify its n
 
   picture = OSSObject.find 'headshot.jpg', 'photos'
 
-N.B. The actual data for the file is not downloaded in both the example where the file appeared in the bucket and when fetched directly. 
+N.B. The actual data for the file is not downloaded in both the example where the file appeared in the bucket and when fetched directly.
 You get the data for the file like this:
 
   picture.value
@@ -163,11 +163,11 @@ Or stream it by passing a block to <tt>stream</tt>:
     end
   end
 
-The data of the file, once download, is cached, so subsequent calls to <tt>value</tt> won't redownload the file unless you 
+The data of the file, once download, is cached, so subsequent calls to <tt>value</tt> won't redownload the file unless you
 tell the object to reload its <tt>value</tt>:
 
   # Redownloads the file's data
-  song.value(:reload) 
+  song.value(:reload)
 
 Other functionality includes:
 
@@ -195,8 +195,8 @@ You can change the content type as well if you like:
   song.content_type = 'application/pdf'
   song.store
 
-(Keep in mind that due to limitations in S3's exposed API, the only way to change things like the content_type
-is to PUT the object onto S3 again. In the case of large files, this will result in fully re-uploading the file.)
+(Keep in mind that due to limitations in OSS's exposed API, the only way to change things like the content_type
+is to PUT the object onto OSS again. In the case of large files, this will result in fully re-uploading the file.)
 
 A bevy of information about an object can be had using the <tt>about</tt> method:
 
@@ -217,7 +217,7 @@ You can get and set metadata for an object:
   # => "A River Ain't Too Much To Love"
   song.metadata[:released] = 2005
   pp song.metadata
-  {"x-amz-meta-released" => 2005, 
+  {"x-amz-meta-released" => 2005,
     "x-amz-meta-album"   => "A River Ain't Too Much To Love"}
   song.store
 
@@ -225,20 +225,20 @@ That metadata will be saved in OSS and is hence forth available from that object
 
   song = OSSObject.find('black-flowers.mp3', 'jukebox')
   pp song.metadata
-  {"x-amz-meta-released" => "2005", 
+  {"x-amz-meta-released" => "2005",
     "x-amz-meta-album"   => "A River Ain't Too Much To Love"}
   song.metadata[:released]
   # => "2005"
   song.metadata[:released] = 2006
   pp song.metadata
-  {"x-amz-meta-released" => 2006, 
+  {"x-amz-meta-released" => 2006,
    "x-amz-meta-album"    => "A River Ain't Too Much To Love"}
 
 
 ==== Streaming uploads
 
-When storing an object on the OSS servers using OSSObject.store, the <tt>data</tt> argument can be a string or an I/O stream. 
-If <tt>data</tt> is an I/O stream it will be read in segments and written to the socket incrementally. This approach 
+When storing an object on the OSS servers using OSSObject.store, the <tt>data</tt> argument can be a string or an I/O stream.
+If <tt>data</tt> is an I/O stream it will be read in segments and written to the socket incrementally. This approach
 may be desirable for very large files so they are not read into memory all at once.
 
   # Non streamed upload
@@ -251,7 +251,7 @@ may be desirable for very large files so they are not read into memory all at on
 == Setting the current bucket
 ==== Scoping operations to a specific bucket
 
-If you plan on always using a specific bucket for certain files, you can skip always having to specify the bucket by creating 
+If you plan on always using a specific bucket for certain files, you can skip always having to specify the bucket by creating
 a subclass of Bucket or OSSObject and telling it what bucket to use:
 
   class JukeBoxSong < Aliyun::OSS::OSSObject
@@ -264,7 +264,7 @@ For all methods that take a bucket name as an argument, the current bucket will 
   JukeBoxSong.store(other_song, open(other_song))
 
 This time we didn't have to explicitly pass in the bucket name, as the JukeBoxSong class knows that it will
-always use the 'jukebox' bucket. 
+always use the 'jukebox' bucket.
 
 "Astute readers", as they say, may have noticed that we used the third parameter to pass in the content type,
 rather than the fourth parameter as we had the last time we created an object. If the bucket can be inferred, or
@@ -279,9 +279,9 @@ Now all operations that would have required a bucket name no longer do.
 == Access control
 ==== Using canned access control policies
 
-By default buckets are private. This means that only the owner has access rights to the bucket and its objects. 
-Objects in that bucket inherit the permission of the bucket unless otherwise specified. When an object is private, the owner can 
-generate a signed url that exposes the object to anyone who has that url. Alternatively, buckets and objects can be given other 
+By default buckets are private. This means that only the owner has access rights to the bucket and its objects.
+Objects in that bucket inherit the permission of the bucket unless otherwise specified. When an object is private, the owner can
+generate a signed url that exposes the object to anyone who has that url. Alternatively, buckets and objects can be given other
 access levels. Several canned access levels are defined:
 
 * <tt>:private</tt> - Owner gets FULL_CONTROL. No one else has any access rights. This is the default.
@@ -292,13 +292,13 @@ access levels. Several canned access levels are defined:
 You can set a canned access level when you create a bucket or an object by using the <tt>:access</tt> option:
 
   OSSObject.store(
-    'kiss.jpg', 
-    data, 
-    'marcel', 
+    'kiss.jpg',
+    data,
+    'marcel',
     :access => :public_read
   )
 
-Since the image we created is publicly readable, we can access it directly from a browser by going to the corresponding bucket name 
+Since the image we created is publicly readable, we can access it directly from a browser by going to the corresponding bucket name
 and specifying the object's key without a special authenticated url:
 
  http://oss.aliyuncs.com/marcel/kiss.jpg
@@ -306,7 +306,7 @@ and specifying the object's key without a special authenticated url:
 
 ==== Accessing private objects from a browser
 
-All private objects are accessible via an authenticated GET request to the OSS servers. You can generate an 
+All private objects are accessible via an authenticated GET request to the OSS servers. You can generate an
 authenticated url for an object like this:
 
   OSSObject.url_for('beluga_baby.jpg', 'marcel_molina')
@@ -316,24 +316,24 @@ By default authenticated urls expire 5 minutes after they were generated.
 Expiration options can be specified either with an absolute time since the epoch with the <tt>:expires</tt> options,
 or with a number of seconds relative to now with the <tt>:expires_in</tt> options:
 
-  # Absolute expiration date 
+  # Absolute expiration date
   # (Expires January 18th, 2038)
   doomsday = Time.mktime(2038, 1, 18).to_i
-  OSSObject.url_for('beluga_baby.jpg', 
-                   'marcel', 
+  OSSObject.url_for('beluga_baby.jpg',
+                   'marcel',
                    :expires => doomsday)
-  
-  # Expiration relative to now specified in seconds 
+
+  # Expiration relative to now specified in seconds
   # (Expires in 3 hours)
-  OSSObject.url_for('beluga_baby.jpg', 
-                   'marcel', 
+  OSSObject.url_for('beluga_baby.jpg',
+                   'marcel',
                    :expires_in => 60 * 60 * 3)
 
 You can specify whether the url should go over SSL with the <tt>:use_ssl</tt> option:
 
   # Url will use https protocol
-  OSSObject.url_for('beluga_baby.jpg', 
-                   'marcel', 
+  OSSObject.url_for('beluga_baby.jpg',
+                   'marcel',
                    :use_ssl => true)
 
 By default, the ssl settings for the current connection will be used.
@@ -379,7 +379,7 @@ Once logs have accumulated, you can access them using the <tt>logs</tt> method:
    #<Aliyun::OSS::Logging::Log '/jukebox-logs/log-2006-11-14-08-15-27-D8EEF536EC09E6B3'>,
    #<Aliyun::OSS::Logging::Log '/jukebox-logs/log-2006-11-14-08-15-29-355812B2B15BD789'>]
 
-Each log has a <tt>lines</tt> method that gives you information about each request in that log. All the fields are available 
+Each log has a <tt>lines</tt> method that gives you information about each request in that log. All the fields are available
 as named methods. More information is available in Logging::Log::Line.
 
   logs = Bucket.logs('jukebox')
@@ -400,11 +400,11 @@ Disabling logging is just as simple as enabling it:
 == Errors
 ==== When things go wrong
 
-Anything you do that makes a request to OSS could result in an error. If it does, the Aliyun::OSS library will raise an exception 
-specific to the error. All exception that are raised as a result of a request returning an error response inherit from the 
-ResponseError exception. So should you choose to rescue any such exception, you can simple rescue ResponseError. 
+Anything you do that makes a request to OSS could result in an error. If it does, the Aliyun::OSS library will raise an exception
+specific to the error. All exception that are raised as a result of a request returning an error response inherit from the
+ResponseError exception. So should you choose to rescue any such exception, you can simple rescue ResponseError.
 
-Say you go to delete a bucket, but the bucket turns out to not be empty. This results in a BucketNotEmpty error (one of the many 
+Say you go to delete a bucket, but the bucket turns out to not be empty. This results in a BucketNotEmpty error (one of the many
 errors listed at http://docs.aliyunwebservices.com/AliyunOSS/2006-03-01/ErrorCodeList.html):
 
   begin
@@ -413,7 +413,7 @@ errors listed at http://docs.aliyunwebservices.com/AliyunOSS/2006-03-01/ErrorCod
     # ...
   end
 
-Once you've captured the exception, you can extract the error message from OSS, as well as the full error response, which includes 
+Once you've captured the exception, you can extract the error message from OSS, as well as the full error response, which includes
 things like the HTTP response code:
 
   error
@@ -428,16 +428,16 @@ You could use this information to redisplay the error in a way you see fit, or j
 
 ==== Accessing the last request's response
 
-Sometimes methods that make requests to the S3 servers return some object, like a Bucket or an S3Object. 
-Other times they return just <tt>true</tt>. Other times they raise an exception that you may want to rescue. Despite all these 
-possible outcomes, every method that makes a request stores its response object for you in Service.response. You can always 
+Sometimes methods that make requests to the OSS servers return some object, like a Bucket or an OSSObject.
+Other times they return just <tt>true</tt>. Other times they raise an exception that you may want to rescue. Despite all these
+possible outcomes, every method that makes a request stores its response object for you in Service.response. You can always
 get to the last request's response via Service.response.
 
   objects = Bucket.objects('jukebox')
   Service.response.success?
   # => true
 
-This is also useful when an error exception is raised in the console which you weren't expecting. You can 
+This is also useful when an error exception is raised in the console which you weren't expecting. You can
 root around in the response to get more details of what might have gone wrong.
 
-  
+

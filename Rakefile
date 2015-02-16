@@ -23,7 +23,7 @@ end
 namespace :doc do
   Rake::RDocTask.new do |rdoc|
     rdoc.rdoc_dir = 'doc'
-    rdoc.title    = "AWS::S3 -- Support for Amazon S3's REST api"
+    rdoc.title    = "Aliyun::OSS -- Support for Amazon OSS's REST api"
     rdoc.options << '--line-numbers' << '--inline-source'
     rdoc.rdoc_files.include('README')
     rdoc.rdoc_files.include('COPYING')

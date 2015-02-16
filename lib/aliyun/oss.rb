@@ -28,8 +28,8 @@ require 'oss/connection'
 require 'oss/authentication'
 require 'oss/response'
 
-module AWS
-  module S3
+module Aliyun
+  module OSS
     UNSAFE_URI = /[^-_.!~*'()a-zA-Z\d;\/?:@&=$,\[\]]/n
 
     def self.escape_uri(path)
@@ -45,17 +45,17 @@ module AWS
     end
 
     Base.class_eval do
-      include AWS::S3::Connection::Management
+      include Aliyun::OSS::Connection::Management
     end
 
     Bucket.class_eval do
-      include AWS::S3::Logging::Management
-      include AWS::S3::ACL::Bucket
+      include Aliyun::OSS::Logging::Management
+      include Aliyun::OSS::ACL::Bucket
     end
 
-    S3Object.class_eval do
-      include AWS::S3::ACL::S3Object
-      include AWS::S3::BitTorrent
+    OSSObject.class_eval do
+      include Aliyun::OSS::ACL::OSSObject
+      include Aliyun::OSS::BitTorrent
     end
   end
 end
@@ -72,7 +72,7 @@ Aliyun::OSS::Parsing.parser =
     # have to use a version greater than '0.3.8.2'.
     raise LoadError unless XML::Parser::VERSION > '0.3.8.2'
     $:.push(File.join(File.dirname(__FILE__), '..', '..', 'support', 'faster-xml-simple', 'lib'))
-    require_library_or_gem 'faster_xml_simple' 
+    require_library_or_gem 'faster_xml_simple'
     FasterXmlSimple
   rescue LoadError
     XmlSimple
