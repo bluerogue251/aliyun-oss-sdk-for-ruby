@@ -6,13 +6,13 @@ class Hash
     query_string = ''
     unless empty?
       query_string << '?' if include_question_mark
-      query_string << inject([]) do |params, (key, value)| 
-        params << "#{key}=#{value}" 
+      query_string << inject([]) do |params, (key, value)|
+        params << "#{key}=#{value}"
       end.join('&')
     end
     query_string
   end
-  
+
   def to_normalized_options
     # Convert all option names to downcased strings, and replace underscores with hyphens
     inject({}) do |normalized_options, (name, value)|
@@ -20,7 +20,7 @@ class Hash
       normalized_options
     end
   end
-  
+
   def to_normalized_options!
     replace(to_normalized_options)
   end
@@ -38,20 +38,20 @@ class String
       self
     end
   end
-  
+
   def tap
     yield(self)
     self
   end unless ''.respond_to?(:tap)
-  
+
   def previous
     dup.previous!
   end
-  
+
   def to_header
     downcase.tr('_', '-')
   end
-  
+
   # ActiveSupport adds an underscore method to String so let's just use that one if
   # we find that the method is already defined
   def underscore
@@ -73,8 +73,8 @@ class String
       false
     end
   end
-  
-  # All paths in in OSS have to be valid unicode so this takes care of 
+
+  # All paths in in OSS have to be valid unicode so this takes care of
   # cleaning up any strings that aren't valid utf-8 according to String#valid_utf8?
   if RUBY_VERSION >= '1.9'
     def remove_extended!
@@ -91,7 +91,7 @@ class String
       gsub!(Regexp.new('[\x80-\xFF]')) { "%02X" % $&[0] }
     end
   end
-  
+
   def remove_extended
     dup.remove_extended!
   end
@@ -103,7 +103,7 @@ class CoercibleString < String
       new(string).coerce
     end
   end
-  
+
   def coerce
     case self
     when 'true';         true
@@ -115,7 +115,7 @@ class CoercibleString < String
       self
     end
   end
-  
+
   private
     # Lame hack since Date._parse is so accepting. OSS dates are of the form: '2006-10-29T23:14:47.000Z'
     # so unless the string looks like that, don't even try, otherwise it might convert an object's
@@ -135,15 +135,15 @@ module Kernel
   def __method__(depth = 0)
     caller[depth][/`([^']+)'/, 1]
   end if RUBY_VERSION <= '1.8.7'
-  
+
   def __called_from__
     caller[1][/`([^']+)'/, 1]
   end if RUBY_VERSION > '1.8.7'
-  
+
   def expirable_memoize(reload = false, storage = nil)
     current_method = RUBY_VERSION > '1.8.7' ? __called_from__ : __method__(1)
     storage = "@#{storage || current_method}"
-    if reload 
+    if reload
       instance_variable_set(storage, nil)
     else
       if cache = instance_variable_get(storage)
@@ -155,7 +155,7 @@ module Kernel
 
   def require_library_or_gem(library, gem_name = nil)
     if RUBY_VERSION >= '1.9'
-      gem(gem_name || library, '>=0') 
+      gem(gem_name || library, '>=0')
     end
     require library
   rescue LoadError => library_not_installed
@@ -187,10 +187,10 @@ class Module
       end
     EVAL
   end
-  
+
   def constant(name, value)
     unless const_defined?(name)
-      const_set(name, value) 
+      const_set(name, value)
       module_eval(<<-EVAL, __FILE__, __LINE__)
         def self.#{name.to_s.downcase}
           #{name.to_s}
@@ -198,7 +198,7 @@ class Module
       EVAL
     end
   end
-  
+
   # Transforms MarcelBucket into
   #
   #   class MarcelBucket < Aliyun::OSS::Bucket
@@ -259,7 +259,7 @@ class Class # :nodoc:
     cattr_reader(*syms)
     cattr_writer(*syms)
   end
-end if Class.instance_methods(false).grep(/^cattr_(?:reader|writer|accessor)$/).empty?
+end if Class.instance_methods.grep(/^cattr_(?:reader|writer|accessor)$/).empty?
 
 module SelectiveAttributeProxy
   def self.included(klass)
@@ -267,18 +267,18 @@ module SelectiveAttributeProxy
     klass.class_eval(<<-EVAL, __FILE__, __LINE__)
       cattr_accessor :attribute_proxy
       cattr_accessor :attribute_proxy_options
-      
+
       # Default name for attribute storage
       self.attribute_proxy         = :attributes
       self.attribute_proxy_options = {:exclusively => true}
-      
+
       private
         # By default proxy all attributes
         def proxiable_attribute?(name)
           return true unless self.class.attribute_proxy_options[:exclusively]
           send(self.class.attribute_proxy).has_key?(name)
         end
-        
+
         def method_missing(method, *args, &block)
           # Autovivify attribute storage
           if method == self.class.attribute_proxy
@@ -295,7 +295,7 @@ module SelectiveAttributeProxy
         end
     EVAL
   end
-  
+
   module ClassMethods
     def proxy_to(attribute_name, options = {})
       if attribute_name.is_a?(Hash)
@@ -332,18 +332,18 @@ module Net
         end
       end
     end
-    
+
     def chunk_size
       1048576 # 1 megabyte
     end
   end
-  
+
   # Net::HTTP before 1.8.4 doesn't have the use_ssl? method or the Delete request type
   class HTTP
     def use_ssl?
       @use_ssl
     end unless public_method_defined? :use_ssl?
-    
+
     class Delete < HTTPRequest
       METHOD = 'DELETE'
       REQUEST_HAS_BODY = false
